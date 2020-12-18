@@ -9,12 +9,12 @@ import { useState } from "react";
 import { LOGIN_WEB } from "constants/configRedux";
 
 const Main = (props) => {
-const [isShow, setIsShow] = useState(true)
+const [isShow, setIsShow] = useState(false)
   const { isLoading } = props;
   console.log("show load :",isLoading);
 
   useEffect(() => {
-    // checkInit();
+    checkInit();
   }, [])
   const checkInit=async()=>{
     await checkLoginAdmin().then(res=>{
