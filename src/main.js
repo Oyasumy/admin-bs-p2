@@ -6,20 +6,21 @@ import { compose } from "redux";
 import Loading from "views/Loading";
 import { checkLoginAdmin } from "apis/apiLogin";
 import { useState } from "react";
+import { LOGIN_WEB } from "constants/configRedux";
 
 const Main = (props) => {
-const [isShow, setIsShow] = useState(false)
+const [isShow, setIsShow] = useState(true)
   const { isLoading } = props;
   console.log("show load :",isLoading);
 
   useEffect(() => {
-    checkInit();
+    // checkInit();
   }, [])
   const checkInit=async()=>{
     await checkLoginAdmin().then(res=>{
       if (res.msg!=="ok") {
         setIsShow(false);
-        window.location.replace('https://oyasumy.github.io/login-admin-p1/');
+        window.location.replace(LOGIN_WEB);
       }else{
 
         setIsShow(true);

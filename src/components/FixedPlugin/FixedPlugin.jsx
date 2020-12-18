@@ -23,14 +23,15 @@ import imagine1 from "assets/img/sidebar-1.jpg";
 import imagine2 from "assets/img/sidebar-2.jpg";
 import imagine3 from "assets/img/sidebar-3.jpg";
 import imagine4 from "assets/img/sidebar-4.jpg";
-
+import { LOGIN_WEB } from "constants/configRedux";
+import {setLogoutAdmin} from '../../apis/apiLogin'
 class FixedPlugin extends Component {
   constructor(props) {
     super(props);
     this.state = {
       classes: "dropdown show-dropdown open",
       bg_checked: true,
-      bgImage: this.props.bgImage
+      bgImage: this.props.bgImage,
     };
   }
   handleClick = () => {
@@ -39,6 +40,14 @@ class FixedPlugin extends Component {
   onChangeClick = () => {
     this.props.handleHasImage(!this.state.bg_checked);
     this.setState({ bg_checked: !this.state.bg_checked });
+  };
+  onLogout = async () => {
+    console.log("lg");
+    await setLogoutAdmin().then((res) => {
+      if (res.msg === "ok") {
+        window.location.replace(LOGIN_WEB);
+      }
+    });
   };
   render() {
     return (
@@ -52,10 +61,7 @@ class FixedPlugin extends Component {
             <li className="adjustments-line">
               <p className="pull-left">Background Image</p>
               <div className="pull-right">
-                <Toggle
-                  defaultChecked={this.state.bg_checked}
-                  onChange={this.onChangeClick}
-                />
+                <Toggle defaultChecked={this.state.bg_checked} onChange={this.onChangeClick} />
               </div>
               <div className="clearfix" />
             </li>
@@ -64,66 +70,42 @@ class FixedPlugin extends Component {
                 <p>Filters</p>
                 <div className="pull-right">
                   <span
-                    className={
-                      this.props.bgColor === "black"
-                        ? "badge filter active"
-                        : "badge filter"
-                    }
+                    className={this.props.bgColor === "black" ? "badge filter active" : "badge filter"}
                     data-color="black"
                     onClick={() => {
                       this.props.handleColorClick("black");
                     }}
                   />
                   <span
-                    className={
-                      this.props.bgColor === "azure"
-                        ? "badge filter badge-azure active"
-                        : "badge filter badge-azure"
-                    }
+                    className={this.props.bgColor === "azure" ? "badge filter badge-azure active" : "badge filter badge-azure"}
                     data-color="azure"
                     onClick={() => {
                       this.props.handleColorClick("azure");
                     }}
                   />
                   <span
-                    className={
-                      this.props.bgColor === "green"
-                        ? "badge filter badge-green active"
-                        : "badge filter badge-green"
-                    }
+                    className={this.props.bgColor === "green" ? "badge filter badge-green active" : "badge filter badge-green"}
                     data-color="green"
                     onClick={() => {
                       this.props.handleColorClick("green");
                     }}
                   />
                   <span
-                    className={
-                      this.props.bgColor === "orange"
-                        ? "badge filter badge-orange active"
-                        : "badge filter badge-orange"
-                    }
+                    className={this.props.bgColor === "orange" ? "badge filter badge-orange active" : "badge filter badge-orange"}
                     data-color="orange"
                     onClick={() => {
                       this.props.handleColorClick("orange");
                     }}
                   />
                   <span
-                    className={
-                      this.props.bgColor === "red"
-                        ? "badge filter badge-red active"
-                        : "badge filter badge-red"
-                    }
+                    className={this.props.bgColor === "red" ? "badge filter badge-red active" : "badge filter badge-red"}
                     data-color="red"
                     onClick={() => {
                       this.props.handleColorClick("red");
                     }}
                   />
                   <span
-                    className={
-                      this.props.bgColor === "purple"
-                        ? "badge filter badge-purple active"
-                        : "badge filter badge-purple"
-                    }
+                    className={this.props.bgColor === "purple" ? "badge filter badge-purple active" : "badge filter badge-purple"}
                     data-color="purple"
                     onClick={() => {
                       this.props.handleColorClick("purple");
@@ -140,8 +122,7 @@ class FixedPlugin extends Component {
                 onClick={() => {
                   this.setState({ bgImage: imagine1 });
                   this.props.handleImageClick(imagine1);
-                }}
-              >
+                }}>
                 <img src={imagine1} alt="..." />
               </a>
             </li>
@@ -151,8 +132,7 @@ class FixedPlugin extends Component {
                 onClick={() => {
                   this.setState({ bgImage: imagine2 });
                   this.props.handleImageClick(imagine2);
-                }}
-              >
+                }}>
                 <img src={imagine2} alt="..." />
               </a>
             </li>
@@ -162,8 +142,7 @@ class FixedPlugin extends Component {
                 onClick={() => {
                   this.setState({ bgImage: imagine3 });
                   this.props.handleImageClick(imagine3);
-                }}
-              >
+                }}>
                 <img src={imagine3} alt="..." />
               </a>
             </li>
@@ -173,13 +152,12 @@ class FixedPlugin extends Component {
                 onClick={() => {
                   this.setState({ bgImage: imagine4 });
                   this.props.handleImageClick(imagine4);
-                }}
-              >
+                }}>
                 <img src={imagine4} alt="..." />
               </a>
             </li>
 
-            <li className="button-container">
+            {/* <li className="button-container">
               <div className="">
                 <a
                   href="https://www.creative-tim.com/product/light-bootstrap-dashboard-react?ref=lbdr-fixed-plugin"
@@ -200,14 +178,14 @@ class FixedPlugin extends Component {
                   Buy Pro
                 </a>
               </div>
-            </li>
+            </li> */}
             <li className="button-container">
               <a
-                href="https://demos.creative-tim.com/light-bootstrap-dashboard-react/#/documentation/getting-started?ref=lbdr-fixed-plugin"
+                // href="https://demos.creative-tim.com/light-bootstrap-dashboard-react/#/documentation/getting-started?ref=lbdr-fixed-plugin"
                 target="_blank"
                 className="btn btn-fill btn-info"
-              >
-                Documentation
+                onClick={() => this.onLogout()}>
+                Logout
               </a>
             </li>
           </ul>

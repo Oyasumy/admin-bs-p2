@@ -3,9 +3,11 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.SET_SHIP_CODE = exports.SET_DISCOUNT = exports.SET_ORDER = exports.DELETE_CUSTOMER = exports.ADD_CUSTOMER = exports.EDIT_CUSTOMER = exports.SET_CUSTOMER = exports.DELETE_PRODUCT = exports.ADD_PRODUCT = exports.EDIT_PRODUCT = exports.SET_PRODUCT = exports.DELETE_IMAGE = exports.ADD_IMAGE = exports.SET_IMAGE = exports.DELETE_CATEGORY = exports.ADD_CATEGORY = exports.EDIT_CATEGORY = exports.SET_CATEGORY = exports.DELETE_AUTHOR = exports.ADD_AUTHOR = exports.EDIT_AUTHOR = exports.SET_AUTHOR = exports.SET_LOADING = exports.API_URL = void 0;
+exports.SET_SHIP_CODE = exports.SET_DISCOUNT = exports.SET_ORDER = exports.DELETE_CUSTOMER = exports.ADD_CUSTOMER = exports.EDIT_CUSTOMER = exports.SET_CUSTOMER = exports.DELETE_PRODUCT = exports.ADD_PRODUCT = exports.EDIT_PRODUCT = exports.SET_PRODUCT = exports.DELETE_IMAGE = exports.ADD_IMAGE = exports.SET_IMAGE = exports.DELETE_CATEGORY = exports.ADD_CATEGORY = exports.EDIT_CATEGORY = exports.SET_CATEGORY = exports.DELETE_AUTHOR = exports.ADD_AUTHOR = exports.EDIT_AUTHOR = exports.SET_AUTHOR = exports.SET_LOADING = exports.LOGIN_WEB = exports.API_URL = void 0;
 var API_URL = "https://sever-bs.herokuapp.com/api/v1";
 exports.API_URL = API_URL;
+var LOGIN_WEB = "https://oyasumy.github.io/login-admin-p1";
+exports.LOGIN_WEB = LOGIN_WEB;
 var SET_LOADING = "SET_LOADING"; // Const Author
 
 exports.SET_LOADING = SET_LOADING;
