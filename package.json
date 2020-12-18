@@ -1,0 +1,66 @@
+{
+  "homepage": "http://oyasumy.github.io/admin-bs-p2",
+  "name": "light-bootstrap-dashboard-react",
+  "version": "1.3.0",
+  "private": true,
+  "dependencies": {
+    "axios": "^0.21.0",
+    "body-scroll-lock": "^3.1.5",
+    "bootstrap": "3.3.7",
+    "chartist": "0.10.1",
+    "date-fns": "^2.16.1",
+    "dotenv": "^8.2.0",
+    "gh-pages": "^3.1.0",
+    "moment": "^2.29.1",
+    "node-sass": "4.12.0",
+    "react": "16.8.6",
+    "react-bootstrap": "0.32.4",
+    "react-chartist": "0.13.3",
+    "react-dom": "16.8.6",
+    "react-google-maps": "9.4.5",
+    "react-images-upload": "^1.2.8",
+    "react-nice-dates": "^3.0.7",
+    "react-notification-system": "0.2.17",
+    "react-redux": "^7.2.2",
+    "react-router": "5.0.0",
+    "react-router-dom": "5.0.0",
+    "react-scripts": "3.0.0",
+    "react-toggle": "4.0.2",
+    "redux": "^4.0.5",
+    "redux-saga": "^1.1.3",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^2.0.1",
+    "styled-components": "^5.2.1",
+    "xss": "^1.0.8"
+  },
+  "devDependencies": {
+    "@types/googlemaps": "3.30.19",
+    "@types/markerclustererplus": "2.1.33",
+    "@types/react": "16.8.13",
+    "typescript": "3.4.3"
+  },
+  "scripts": {
+    "predeploy": "yarn run build",
+    "deploy": "gh-pages -d build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start",
+    "compile-sass": "node-sass src/assets/sass/light-bootstrap-dashboard-react.scss src/assets/css/light-bootstrap-dashboard-react.css",
+    "minify-sass": "node-sass src/assets/sass/light-bootstrap-dashboard-react.scss src/assets/css/light-bootstrap-dashboard-react.min.css --output-style compressed",
+    "map-sass": "node-sass src/assets/sass/light-bootstrap-dashboard-react.scss src/assets/css/light-bootstrap-dashboard-react.css --source-map true"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
