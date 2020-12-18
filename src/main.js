@@ -18,9 +18,10 @@ const [isShow, setIsShow] = useState(false)
   }, [])
   const checkInit=async()=>{
     await checkLoginAdmin().then(res=>{
-      if (res.msg!=="ok") {
+      console.log("res",res);
+      if (res===null||res.msg!=="ok") {
         setIsShow(false);
-        window.location.replace(LOGIN_WEB);
+        window.location.replace('https://oyasumy.github.io/login-admin-p1');
       }else{
 
         setIsShow(true);
