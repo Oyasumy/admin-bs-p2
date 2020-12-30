@@ -21,7 +21,7 @@ const [isShow, setIsShow] = useState(false)
       console.log("res",res);
       if (res===null||res.msg!=="ok") {
         setIsShow(false);
-        window.location.replace('https://oyasumy.github.io/login-admin-p1');
+        window.location.replace(LOGIN_WEB);
       }else{
 
         setIsShow(true);

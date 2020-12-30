@@ -37,6 +37,8 @@ var _TableDiscount = _interopRequireDefault(require("views/Table/TableDiscount")
 
 var _TableShipCode = _interopRequireDefault(require("views/Table/TableShipCode"));
 
+var _TableReport = _interopRequireDefault(require("views/Table/TableReport"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var dashboardRoutes = [{
@@ -46,12 +48,19 @@ var dashboardRoutes = [{
   component: _Dashboard.default,
   layout: "/admin"
 }, {
-  path: "/user",
-  name: "User Profile",
+  path: "/report",
+  name: "Report",
   icon: "pe-7s-user",
-  component: _UserProfile.default,
+  component: _TableReport.default,
   layout: "/admin"
-}, {
+}, // {
+//   path: "/user",
+//   name: "User Profile",
+//   icon: "pe-7s-user",
+//   component: UserProfile,
+//   layout: "/admin",
+// },
+{
   path: "/author",
   name: "Author List",
   icon: "pe-7s-note2",
@@ -99,13 +108,14 @@ var dashboardRoutes = [{
   icon: "pe-7s-car",
   component: _TableShipCode.default,
   layout: "/admin"
-}, {
-  path: "/typography",
-  name: "Typography",
-  icon: "pe-7s-news-paper",
-  component: _Typography.default,
-  layout: "/admin"
-}, {
+}, // {
+//   path: "/typography",
+//   name: "Typography",
+//   icon: "pe-7s-news-paper",
+//   component: Typography,
+//   layout: "/admin",
+// },
+{
   path: "/icons",
   name: "Icons",
   icon: "pe-7s-science",

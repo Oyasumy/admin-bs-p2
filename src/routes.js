@@ -14,6 +14,7 @@ import TableCustomer from "views/Table/TableCustomer";
 import TableOrder from "views/Table/TableOrder";
 import TableDiscount from "views/Table/TableDiscount";
 import TableShipCode from "views/Table/TableShipCode";
+import TableReport from "views/Table/TableReport";
 
 const dashboardRoutes = [
   {
@@ -24,12 +25,19 @@ const dashboardRoutes = [
     layout: "/admin",
   },
   {
-    path: "/user",
-    name: "User Profile",
+    path: "/report",
+    name: "Report",
     icon: "pe-7s-user",
-    component: UserProfile,
+    component: TableReport,
     layout: "/admin",
   },
+  // {
+  //   path: "/user",
+  //   name: "User Profile",
+  //   icon: "pe-7s-user",
+  //   component: UserProfile,
+  //   layout: "/admin",
+  // },
   {
     path: "/author",
     name: "Author List",
@@ -86,13 +94,13 @@ const dashboardRoutes = [
     component: TableShipCode,
     layout: "/admin",
   },
-  {
-    path: "/typography",
-    name: "Typography",
-    icon: "pe-7s-news-paper",
-    component: Typography,
-    layout: "/admin",
-  },
+  // {
+  //   path: "/typography",
+  //   name: "Typography",
+  //   icon: "pe-7s-news-paper",
+  //   component: Typography,
+  //   layout: "/admin",
+  // },
   {
     path: "/icons",
     name: "Icons",

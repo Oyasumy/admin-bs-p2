@@ -5,7 +5,7 @@ import { Pagination, Confirm, Segment, Image, Container, Grid as GridS, Message,
 import { Modal, Button as ButtonSemantic, Input, Label } from "semantic-ui-react";
 
 import Card from "components/Card/Card.jsx";
-import { headerOrder } from "variables/HeaderTable";
+import { headerReport } from "variables/HeaderTable";
 import { connect } from "react-redux";
 import { bindActionCreators, compose } from "redux";
 import { getAllOrder, setCancelOrder, getOrderDetail, changeStateOrderApi } from "apis/apiOrder";
@@ -30,7 +30,7 @@ import { enGB } from "date-fns/locale";
 import { DateRangePicker, START_DATE, END_DATE } from "react-nice-dates";
 import { parseISO } from "date-fns";
 
-const TableOrder = (props) => {
+const TableReport = (props) => {
   //
   const ref = useRef(null);
   const { isLoading, orders } = props;
@@ -46,7 +46,7 @@ const TableOrder = (props) => {
 
   // Set Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [postPage] = useState(5);
+  const [postPage] = useState(10);
   const [pageNumber, setPageNumber] = useState(0);
 
   // State date time
@@ -60,13 +60,26 @@ const TableOrder = (props) => {
   const [sortByState, setSortByState] = useState("all");
   const [tempDataBeforeSortState, setTempDataBeforeSortState] = useState(newOrderList);
 
+  // Sort by Method Payment
+  const [sortByMethodPayment, setSortByMethodPayment] = useState("all");
+  const [tempDataBeforeSortMethodPayment, setTempDataBeforeSortMethodPayment] = useState(tempDataBeforeSortState);
+
+  // State Total Price
+  const [totalPrice, setTotalPrice] = useState(0);
+
   // State Sort State
   const countryOptions = [
     { key: "1", value: "all", text: "all" },
     { key: "2", value: "pending", text: "pending" },
-    { key: "5", value: "shipping", text: "shipping" },
-    { key: "4", value: "done", text: "done" },
     { key: "3", value: "cancel", text: "cancel" },
+    { key: "4", value: "done", text: "done" },
+    { key: "5", value: "shipping", text: "shipping" },
+  ];
+  // State Sort Method Payment
+  const methodOptions = [
+    { key: "1", value: "all", text: "all" },
+    { key: "2", value: "cash", text: "cash" },
+    { key: "3", value: "card", text: "card" },
   ];
 
   // console.log(isLoading, orders);
@@ -97,6 +110,21 @@ const TableOrder = (props) => {
     }
   }, [sortByState, newOrderList]);
 
+  // Sort by Method
+  useEffect(() => {
+    var newData = [];
+    if (sortByMethodPayment === "all") {
+      setTempDataBeforeSortMethodPayment(tempDataBeforeSortState);
+    } else if (sortByMethodPayment === "cash") {
+      newData = tempDataBeforeSortState.filter((m) => m.phuongthucthanhtoan === "cash");
+      setTempDataBeforeSortMethodPayment(newData);
+    } else if (sortByMethodPayment === "card") {
+      newData = tempDataBeforeSortState.filter((m) => m.phuongthucthanhtoan === "card");
+      // console.log("new",newData);
+      setTempDataBeforeSortMethodPayment(newData);
+    }
+  }, [sortByMethodPayment, tempDataBeforeSortState]);
+
   // Sort data with date time
   useEffect(() => {
     if (startDate && endDate) {
@@ -106,10 +134,11 @@ const TableOrder = (props) => {
       setNewOrderList(orders);
     }
   }, [startDate, endDate, orders]);
+
   // Change pagination
   useEffect(() => {
-    setPageNumber(Math.ceil(tempDataBeforeSortState.length / postPage));
-  }, [tempDataBeforeSortState, pageNumber, postPage]);
+    setPageNumber(Math.ceil(tempDataBeforeSortMethodPayment.length / postPage));
+  }, [tempDataBeforeSortMethodPayment, pageNumber, postPage]);
 
   const loadData = async () => {
     await getAllOrder()
@@ -161,127 +190,16 @@ const TableOrder = (props) => {
     setCurrentPage(data.activePage);
   };
 
-  // // Edit data
-  // const EditData = (data) => {
-  //   setDataEdit(data);
-  //   setTitle("Edit Author!!");
-  //   // setShowModal(true);
-  // };
-  // // Add Data
-  // const AddData = () => {
-  //   setDataEdit({});
-  //   // setShowModal(true);
-  //   setTitle("Change State!!");
-  // };
-  // Call Api to DELETE
-  const cancelOrder = async (data) => {
-    console.log("text", data);
-    console.log("Enter", dataDelete);
-
-    var newRes = [];
-    await getOrderDetail(dataDelete.idoder).then((res) => {
-      if (res.msg === "ok") {
-        if (res.result.length > 0) {
-          for (let i = 0; i < res.result.length; i++) {
-            newRes.push({ idP: res.result[i].ProductID, quan: res.result[i].quantity });
-          }
-        }
-      }
-    });
-    // console.log("de", newRes);
-    setOpenConfirm(false);
-    await setCancelOrder({ id: dataDelete.idoder, text: data, ar: newRes })
-      .then((res) => {
-        console.log(res);
-        if (res) {
-          loadData();
-          // handleDeleteAuthor({ NameAuthor: data.NameAuthor, idoder: data.idoder });
-        } else {
-          throw new Error("Failed to delete user");
-        }
-      })
-      .then(() => {
-        // Show message success
-        ref.current.addNotification({
-          title: <span data-notify="icon" className="pe-7s-gift" />,
-          message: (
-            <div>
-              Success <b>Delete data</b> - mew mew.
-            </div>
-          ),
-          level: "info",
-          position: "tr",
-          autoDismiss: 5,
-        });
-        setOpenCancel(false);
-      })
-      .catch((err) => {
-        console.log(err);
-        // Show message failed
-        ref.current.addNotification({
-          title: <span data-notify="icon" className="pe-7s-gift" />,
-          message: (
-            <div>
-              Failed <b>Delete data</b> - mew mew.
-            </div>
-          ),
-          level: "warning",
-          position: "tr",
-          autoDismiss: 5,
-        });
+  // Update Total Price
+  useEffect(() => {
+    if (tempDataBeforeSortMethodPayment.length > 0) {
+      var total = 0;
+      tempDataBeforeSortMethodPayment.forEach((element) => {
+        total += element.tongtienthu;
       });
-  };
-  // Call Api to ADD or EDIT
-  const onEnter = async (data) => {
-    console.log("Enter", data);
-    const { trangthai, idoder } = data.order;
-    var text = "";
-    if (trangthai === "pending") {
-      text = "approve";
-    } else if (trangthai === "approve") {
-      text = "shipping";
-    } else if (trangthai === "shipping") {
-      text = "done";
+      setTotalPrice(total);
     }
-    console.log("c", trangthai, idoder, text);
-    // return
-
-    await changeStateOrderApi({ id: idoder, text: text })
-      .then((res) => {
-        if (res) {
-          // Show message success
-          ref.current.addNotification({
-            title: <span data-notify="icon" className="pe-7s-gift" />,
-            message: (
-              <div>
-                Success <b>Update</b>.
-              </div>
-            ),
-            level: "info",
-            position: "tr",
-            autoDismiss: 5,
-          });
-          loadData();
-        }
-        setShowModal(false);
-      })
-      .catch((er) => {
-        console.log("er", er);
-        // Show message failed
-        ref.current.addNotification({
-          title: <span data-notify="icon" className="pe-7s-gift" />,
-          message: (
-            <div>
-              Failed <b>Delete data</b> - mew mew.
-            </div>
-          ),
-          level: "warning",
-          position: "tr",
-          autoDismiss: 5,
-        });
-        setShowModal(false);
-      });
-  };
+  }, [tempDataBeforeSortMethodPayment]);
   // Change State order
   const Api = async (prop) => {
     console.log(prop);
@@ -355,7 +273,8 @@ const TableOrder = (props) => {
         console.log("er", er);
       });
   };
-  var product = [...tempDataBeforeSortState];
+
+  var product = [...tempDataBeforeSortMethodPayment];
   const indexOfLastPost = currentPage * postPage;
   const indexOfFirstPost = indexOfLastPost - postPage;
 
@@ -363,35 +282,38 @@ const TableOrder = (props) => {
 
   return (
     <div className="content">
-      <ModalCancel isShowConfirm={openCancel} setShow={(t) => setOpenCancel(t)} onCancelData={(v) => cancelOrder(v)} />
-      {/* <Confirm open={openConfirm} onCancel={() => setOpenConfirm(false)} onConfirm={() => cancelOrder(dataDelete)} style={{ height: "fit-content", display: "flex", justifyContent: "center", margin: "auto" }} /> */}
-      <ModelShow
-        title={title}
-        isShow={showModal}
-        onCancelData={() => setShowModal(false)}
-        onEnter={(e) => onEnter(e)}
-        dataEdit={dataEdit}
-        failedOrder={() => {
-          setOpenCancel(true);
-          setDataDelete(dataEdit.order);
-        }}
-      />
       <NotificationSystem ref={ref} style={style} />
+      <ModelShow title={title} isShow={showModal} onCancelData={() => setShowModal(false)} dataEdit={dataEdit} />
       <Grid fluid>
         <Row>
           <Col md={12}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <DateRangePicker startDate={startDate} endDate={endDate} onStartDateChange={setStartDate} onEndDateChange={setEndDate} minimumLength={1} format="dd MMM yyyy" locale={enGB}>
-                {/* <DateRangePicker startDate={startDate} endDate={endDate} onStartDateChange={setStartDate} onEndDateChange={setEndDate} minimumDate={new Date()} minimumLength={1} format="dd MMM yyyy" locale={enGB}> */}
-                {({ startDateInputProps, endDateInputProps, focus }) => (
-                  <div className="date-range">
-                    <input className={"input input-date-time" + (focus === START_DATE ? " -focused" : "")} {...startDateInputProps} placeholder="Start date" />
-                    <span className="date-range_arrow" />
-                    <input style={{ marginLeft: "20px" }} className={"input input-date-time" + (focus === END_DATE ? " -focused" : "")} {...endDateInputProps} placeholder="End date" />
-                  </div>
-                )}
-              </DateRangePicker>
-              <Select style={{ height: "fit-content" }} placeholder="Select your State" options={countryOptions} value={sortByState} onChange={(e, { value }) => setSortByState(value)} />
+              {/* Select Date */}
+              <div>
+                <h3>Select Date</h3>
+                <DateRangePicker startDate={startDate} endDate={endDate} onStartDateChange={setStartDate} onEndDateChange={setEndDate} minimumLength={1} format="dd MMM yyyy" locale={enGB}>
+                  {/* <DateRangePicker startDate={startDate} endDate={endDate} onStartDateChange={setStartDate} onEndDateChange={setEndDate} minimumDate={new Date()} minimumLength={1} format="dd MMM yyyy" locale={enGB}> */}
+                  {({ startDateInputProps, endDateInputProps, focus }) => (
+                    <div className="date-range">
+                      <input className={"input input-date-time" + (focus === START_DATE ? " -focused" : "")} {...startDateInputProps} placeholder="Start date" />
+                      <span className="date-range_arrow" />
+                      <input style={{ marginLeft: "20px" }} className={"input input-date-time" + (focus === END_DATE ? " -focused" : "")} {...endDateInputProps} placeholder="End date" />
+                    </div>
+                  )}
+                </DateRangePicker>
+              </div>
+
+              {/* Select State */}
+              <div>
+                <h3>Select Sate</h3>
+                <Select style={{ height: "fit-content" }} placeholder="Select your State" options={countryOptions} value={sortByState} onChange={(e, { value }) => setSortByState(value)} />
+              </div>
+
+              {/*  Select Method Payment */}
+              <div>
+                <h3>Select Method Payment</h3>
+                <Select style={{ height: "fit-content" }} placeholder="Select your method" options={methodOptions} value={sortByMethodPayment} onChange={(e, { value }) => setSortByMethodPayment(value)} />
+              </div>
             </div>
 
             <Card
@@ -403,13 +325,13 @@ const TableOrder = (props) => {
                 <Table striped hover>
                   <thead>
                     <tr>
-                      {headerOrder.map((prop, key) => {
+                      {headerReport.map((prop, key) => {
                         return <th key={key}>{prop}</th>;
                       })}
                     </tr>
                   </thead>
                   <tbody>
-                    {tempDataBeforeSortState.length > 0
+                    {tempDataBeforeSortMethodPayment.length > 0
                       ? currentPost.map((prop, key) => {
                           const color = prop.idCustomer ? "teal" : "gray";
                           var dis = true;
@@ -432,7 +354,7 @@ const TableOrder = (props) => {
                           // parse date time
                           const newDate = moment(prop.ngaydat).locale("vi", vi).format("MMMM Do YYYY, h:mm:ss a");
                           return (
-                            <tr key={key}>
+                            <tr key={key} onClick={() => Api(prop)}>
                               <td>{key}</td>
                               <td>{prop.idoder}</td>
                               <td>{newDate}</td>
@@ -444,49 +366,9 @@ const TableOrder = (props) => {
                               </td>
                               <td>{prop.tongtiendonhang}</td>
                               <td>{prop.tongtienthu}</td>
-                              <td onClick={() => Api(prop)}>
-                                <Label color={color}>{prop.idCustomer ? "Customer" : "Guest"}</Label>
+                              <td>
+                                <Label color={color}>{prop.idCustomer ? "Customer" : "Guess"}</Label>
                               </td>
-                              {prop.trangthai === "cancel" ? (
-                                <td>
-                                  <Button bsStyle="error" disabled={true} fill type="submit">
-                                    Order was Cancel
-                                  </Button>
-                                </td>
-                              ) : prop.trangthai === "done" ? (
-                                <td>
-                                  <Button bsStyle="info" disabled={true} fill type="submit">
-                                    Payment is completed
-                                  </Button>
-                                </td>
-                              ) : (
-                                <>
-                                  <td style={{ display: "flex", justifyContent: "space-between" }}>
-                                    <Button bsStyle="info" disabled={prop.trangthai === "done" ? true : false} fill type="submit" onClick={() => Api(prop)}>
-                                      {nameBut}
-                                    </Button>
-                                    {prop.trangthai === "pending" ? (
-                                      <Button
-                                        bsStyle="warning"
-                                        fill
-                                        style={{ marginLeft: "5px" }}
-                                        // disabled={false}
-                                        disabled={dis}
-                                        type="submit"
-                                        onClick={() => {
-                                          // setOpenConfirm(true);
-                                          setDataDelete(prop);
-                                          setOpenCancel(true);
-                                          // console.log("ok");
-                                        }}>
-                                        Cancel
-                                      </Button>
-                                    ) : (
-                                      ""
-                                    )}
-                                  </td>
-                                </>
-                              )}
                             </tr>
                           );
                         })
@@ -495,7 +377,12 @@ const TableOrder = (props) => {
                 </Table>
               }
             />
-            <Pagination defaultActivePage={currentPage} pointing secondary totalPages={pageNumber} onPageChange={(e, d) => handlePagination(d)} style={{ float: "right" }} />
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <Label size="massive" color="blue">
+                Total : ${totalPrice.toFixed(3)}
+              </Label>
+              <Pagination defaultActivePage={currentPage} pointing secondary totalPages={pageNumber} onPageChange={(e, d) => handlePagination(d)} style={{ float: "right" }} />
+            </div>
             {/* <Button bsStyle="danger" fill type="submit" onClick={() => AddData()}>
               Add
             </Button> */}
@@ -515,9 +402,9 @@ const mapDispatchToProps = (dispatch) => ({
 });
 const withConnect = connect(mapStateToProps, mapDispatchToProps);
 
-export default compose(withConnect)(TableOrder);
+export default compose(withConnect)(TableReport);
 
-const ModelShow = ({ isShow, title, onCancelData, onEnter, dataEdit, failedOrder }) => {
+const ModelShow = ({ isShow, onCancelData, dataEdit }) => {
   // const [state, setState] = useState({ name: "", id: -1 });
   const [open, setOpen] = useState(isShow);
   const [disable, setDisable] = useState(true);
@@ -577,7 +464,7 @@ const ModelShow = ({ isShow, title, onCancelData, onEnter, dataEdit, failedOrder
 
   // Show information Receiver
   const showReceiver = (data) => {
-    console.log("ok", data);
+    // console.log("ok", data);
     var result = null;
     if (data.idreceiver) {
       result = (
@@ -604,7 +491,7 @@ const ModelShow = ({ isShow, title, onCancelData, onEnter, dataEdit, failedOrder
   };
   return (
     <Modal dimmer="blurring" open={isShow} onClose={() => setOpen(false)} style={{ height: "fit-content", display: "flex", justifyContent: "center", margin: "auto" }}>
-      <Modal.Header>Update State!!</Modal.Header>
+      <Modal.Header>Detail Order!!</Modal.Header>
       <Modal.Content>
         {/* Products */}
         <Container>
@@ -706,55 +593,6 @@ const ModelShow = ({ isShow, title, onCancelData, onEnter, dataEdit, failedOrder
       <Modal.Actions>
         <ButtonSemantic negative onClick={() => onCancel()}>
           Disagree
-        </ButtonSemantic>
-        {dataEdit.order ? (
-          dataEdit.order.trangthai !== "cancel" ? (
-            <ButtonSemantic positive onClick={() => onEnter(dataEdit)} disabled={disable}>
-              Agree
-            </ButtonSemantic>
-          ) : (
-            ""
-          )
-        ) : (
-          ""
-        )}
-        {dataEdit.order ? (
-          dataEdit.order.trangthai === "shipping" ? (
-            <ButtonSemantic color="facebook" onClick={() => failedOrder()}>
-              Cancel
-            </ButtonSemantic>
-          ) : (
-            ""
-          )
-        ) : (
-          ""
-        )}
-      </Modal.Actions>
-    </Modal>
-  );
-};
-
-const ModalCancel = ({ isShowConfirm, onCancelData, setShow }) => {
-  const [open, setOpen] = useState(isShowConfirm);
-  const [value, setValue] = useState("");
-  // console.log("is", isShowConfirm);
-
-  useEffect(() => {
-    setOpen(isShowConfirm);
-  }, [isShowConfirm]);
-  return (
-    <Modal size="tiny" open={open} onOpen={() => setShow(true)} style={{ height: "fit-content", display: "flex", justifyContent: "center", margin: "auto" }}>
-      <Modal.Header>Cancel Order!!</Modal.Header>
-      <Modal.Content>
-        <p>Are you sure you want to Cancel this Order</p>
-      </Modal.Content>
-      <TextArea placeholder="Tell us more" value={value} onChange={(e, { value }) => setValue(value)} style={{ width: "90%", display: "flex", justifyContent: "center", margin: "auto", marginBottom: "5px", padding: "5px" }} />
-      <Modal.Actions>
-        <ButtonSemantic negative onClick={() => setShow(false)}>
-          No
-        </ButtonSemantic>
-        <ButtonSemantic positive onClick={() => onCancelData(value)} disabled={value.length <= 5 ? true : false}>
-          Yes
         </ButtonSemantic>
       </Modal.Actions>
     </Modal>
