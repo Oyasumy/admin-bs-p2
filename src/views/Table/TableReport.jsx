@@ -198,6 +198,9 @@ const TableReport = (props) => {
         total += element.tongtienthu;
       });
       setTotalPrice(total);
+    }else{
+      setTotalPrice(0);
+
     }
   }, [tempDataBeforeSortMethodPayment]);
   // Change State order
