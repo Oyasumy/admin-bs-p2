@@ -1,6 +1,6 @@
-export const API_URL = "http://127.0.0.1:5000/api/v1/";
+// export const API_URL = "http://127.0.0.1:5000/api/v1/";
 // export const LOGIN_WEB = "http://localhost:3002/";
-// export const API_URL = "https://sever-bs.herokuapp.com/api/v1";
+export const API_URL = "https://sever-bs.herokuapp.com/api/v1";
 export const LOGIN_WEB = "https://oyasumy.github.io/login-admin-p1";
 
 export const SET_LOADING = "SET_LOADING";

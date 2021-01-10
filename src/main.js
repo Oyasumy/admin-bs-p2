@@ -9,39 +9,41 @@ import { useState } from "react";
 import { LOGIN_WEB } from "constants/configRedux";
 
 const Main = (props) => {
-const [isShow, setIsShow] = useState(false)
+  const [isShow, setIsShow] = useState(false);
   const { isLoading } = props;
-  console.log("show load :",isLoading);
+  console.log("show load :", isLoading);
 
   useEffect(() => {
     checkInit();
-  }, [])
-  const checkInit=async()=>{
-    await checkLoginAdmin().then(res=>{
-      console.log("res",res);
-      if (res===null||res.msg!=="ok") {
-        setIsShow(false);
-        window.location.replace(LOGIN_WEB);
-      }else{
-
-        setIsShow(true);
-      }
-    }).catch(er=>{
-      console.log("er",er);
-    })
-  }
+  }, []);
+  const checkInit = async () => {
+    await checkLoginAdmin()
+      .then((res) => {
+        console.log("res", res);
+        if (res === null || res.msg !== "ok") {
+          setIsShow(false);
+          window.location.replace(LOGIN_WEB);
+        } else {
+          setIsShow(true);
+        }
+      })
+      .catch((er) => {
+        console.log("er", er);
+      });
+  };
   return (
     <>
-     {isShow? <>
-        {isLoading ? <Loading /> : null}
-        <BrowserRouter>
-          <Switch>
-            <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
-            <Redirect from="/" to="/admin/dashboard" />
-          </Switch>
-        </BrowserRouter>
-      </>
-    :null}
+      {isShow ? (
+        <>
+          {isLoading ? <Loading /> : null}
+          <BrowserRouter>
+            <Switch>
+              <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
+              <Redirect from="/" to="/admin/dashboard" />
+            </Switch>
+          </BrowserRouter>
+        </>
+      ) : null}
     </>
   );
 };
